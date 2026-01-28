@@ -27,7 +27,7 @@ import CreateIcon from "@/components/navbar/icons/CreateIcon.vue";
           </div>
         </div>
         <div class="navbar-end">
-          <RouterLink :to="{name:'user-account-login-index'}" active-class="btn-active" class="btn btn-ghost text-lg">登录</RouterLink>
+          <RouterLink :to="{name:'user-account-login-index'}" active-class="btn-active" class="btn btn-ghost text-lg">登录/注册</RouterLink>
         </div>
       </nav>
       <slot></slot>
