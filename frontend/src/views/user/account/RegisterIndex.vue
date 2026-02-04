@@ -4,7 +4,6 @@ import {useUserStore} from "@/stores/user.js";
 import {useRouter} from "vue-router";
 import api from "@/js/http/api.js";
 
-
   const username=ref('')
   const password=ref('')
   const passwordConfirmed=ref('')

@@ -5,7 +5,7 @@ import HomepageIcon from "@/components/navbar/icons/HomepageIcon.vue";
 import FriendIcon from "@/components/navbar/icons/FriendIcon.vue";
 import CreateIcon from "@/components/navbar/icons/CreateIcon.vue";
 import { useUserStore } from "@/stores/user";
-import UserMenu from "@/components/UserMenu.vue";
+import UserMenu from "@/components/navbar/UserMenu.vue";
 const user=useUserStore()
 </script>
 
