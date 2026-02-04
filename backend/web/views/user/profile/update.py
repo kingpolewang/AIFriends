@@ -46,7 +46,8 @@ class UpdateProfileView(APIView):
                 'profile': user_profile.profile,
                 'photo': user_profile.photo.url,
             })
-        except:
+        except Exception as e:
+            print(e)
             return Response({
                 'result': '系统异常，请稍后重试'
             })
