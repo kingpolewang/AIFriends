@@ -10,6 +10,7 @@ const user = useUserStore()
 const route = useRoute()
 const router = useRouter()
 
+//页面加载之后显示一次
 onMounted(async () => {
   try {
     const res = await api.get('/api/user/account/get_user_info/')

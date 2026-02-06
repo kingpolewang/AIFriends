@@ -10,7 +10,6 @@ export const useUserStore=defineStore('user',()=>{
     const hasPulledUserInfo = ref(false)
     function isLogin(){
         return !!accessToken.value     //如果是空   必须要带value!
-        accessToken.value = ''
     }
     function setAccessToken(token){
         accessToken.value=token
