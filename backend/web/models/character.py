@@ -42,4 +42,4 @@ class Character(models.Model):  # models.Model----继承Django的Model基类
            在Django后台、shell等地方显示时使用
         """
         # 格式：用户名 - 角色名 - 创建时间
-        return f"{self.author.user.username} - {self.name} - {localtime(self.create_time).strftime('%Y-%m-%d %H:%M:%S')}"
+        return f"{self.author.user.username} - {self.name} - {timezone.localtime(self.create_time).strftime('%Y-%m-%d %H:%M:%S')}"

@@ -80,10 +80,10 @@ defineExpose({
 <template>
   <div class="flex justify-center">
     <div class="avatar relative">
-      <div class="w-28 rounded-full">
+      <div v-if="myPhoto" class="w-28 rounded-full">
         <img :src="myPhoto" alt="">
       </div>
-      <div @click="fileInputRef.click()" class="absolute left-0 top-0 w-28 h-28 flex justify-center
+      <div v-else @click="fileInputRef.click()" class="absolute left-0 top-0 w-28 h-28 flex justify-center
            items-center bg-black/20 rounded-full cursor-pointer">
         <CameraIcon />
       </div>
@@ -94,7 +94,7 @@ defineExpose({
   <dialog ref="modal-ref" class="modal">
     <div class="modal-box transition-none">
       <button @click="modalRef.close()" class="btn btn-circle btn-sm btn-ghost
-        absolute right-2 top-2">x</button>
+        absolute right-2 top-2">✕</button>
     </div>
 
     <!-- croppie-ref 定义croppie绑定的标签  -->
