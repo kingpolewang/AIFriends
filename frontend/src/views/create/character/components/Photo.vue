@@ -3,7 +3,6 @@ import Croppie from 'croppie'
 import 'croppie/croppie.css'
 import {onBeforeUnmount, ref, useTemplateRef, watch} from "vue";
 import CameraIcon from "@/views/user/profile/components/icon/CameraIcon.vue";
-import modal from "daisyui/components/modal/index.js";
 
 
 

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 
-const route=useRoute()
+
 </script>
 
 <template>
-个人空间:{{route.params.user_id}}
+个人空间
 </template>
 
 <style scoped>

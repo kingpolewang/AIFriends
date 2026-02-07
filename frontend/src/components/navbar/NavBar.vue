@@ -7,6 +7,7 @@ import CreateIcon from "@/components/navbar/icons/CreateIcon.vue";
 import { useUserStore } from "@/stores/user";
 import UserMenu from "@/components/navbar/UserMenu.vue";
 const user=useUserStore()
+
 </script>
 
 <template>
@@ -30,12 +31,12 @@ const user=useUserStore()
           </div>
         </div>
         <div class="navbar-end">
-          <RouterLink v-if="user.isLogin()" :to="{name:'create-index'}" active-class="btn-active"
-                      class="btn btn-ghost text-base mr-6">
+           <RouterLink v-if="user.isLogin()" :to="{name: 'update-character', params: {character_id: 2}}"
+                       active-class="btn-active" class="btn btn-ghost text-base mr-6">
             <CreateIcon/>
-            创作
+            更新角色
           </RouterLink>
-          <!--   没有登录展示       -->
+          <!--   没有登录展示     -->
           <RouterLink v-if="user.hasPulledUserInfo && !user.isLogin()" :to="{name: 'user-account-login-index'}"
                       active-class="btn-active" class="btn btn-ghost text-lg">
             登录/注册

@@ -1,10 +1,10 @@
-<script setup lang="ts">
+<script setup >
 import {onBeforeUnmount, ref, useTemplateRef, watch} from "vue";
 import CameraIcon from "@/views/user/profile/components/icon/CameraIcon.vue";
 import Croppie from "croppie";
 
 const props = defineProps(['backgroundImage'])
-const myBackgroundImage=ref('')
+const myBackgroundImage = ref(props.backgroundImage)
 
 watch(()=>props.backgroundImage,newVal=>{
   myBackgroundImage.value=newVal
