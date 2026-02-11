@@ -1,10 +1,13 @@
 #删除角色
+from os import remove
+
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from web.models.character import Character
+from web.views.utils.photo import remove_old_photo
 
 
 class RemoveCharacterView(APIView):
@@ -17,7 +20,10 @@ class RemoveCharacterView(APIView):
             # Character（角色） → author（外键） → UserProfile（用户资料） → user（一对一） → User（Django用户）
             # pk 是 Django 模型中主键（primary key）的通用访问方式
             # Django默认会创建一个名为 'id' 的自增主键  所以 pk 实际上指向 id 字段
-            Character.objects.filter(pk=character_id,author__user=request.user).delete()
+            character =Character.objects.get(pk=character_id,author__user=request.user)
+            remove_old_photo(character.photo)
+            remove_old_photo(character.background_image)
+            character.delete()
             return Response({
                 'result': 'success',
             })
