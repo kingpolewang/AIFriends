@@ -17,13 +17,12 @@ class UpdateCharacterView(APIView):
             character = Character.objects.get(id=character_id,author__user=request.user)
             name = request.data['name'].strip()
             profile = request.data['profile'].strip()[:100000]
-
             # request.FILES 是Django处理文件上传的核心组件，用于接收客户端上传的文件数据
             #是一个类似字典的对象，包含所有上传的文件
             # 只有在POST请求且包含 enctype="multipart/form-data" 时才有数据
             #每个文件都是一个 UploadedFile 对象
             photo = request.FILES.get('photo',None)
-            background_image = request.FILES.get('background',None)
+            background_image = request.FILES.get('background_image',None)
             if not name:
                 return Response({
                     'result':'名字不能为空'
