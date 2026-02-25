@@ -6,7 +6,31 @@ import FriendIcon from "@/components/navbar/icons/FriendIcon.vue";
 import CreateIcon from "@/components/navbar/icons/CreateIcon.vue";
 import { useUserStore } from "@/stores/user";
 import UserMenu from "@/components/navbar/UserMenu.vue";
+import {ref, watch} from "vue";
+import {useRoute, useRouter} from "vue-router";
 const user=useUserStore()
+
+const searchQuery = ref('')
+const router = useRouter()
+const route = useRoute()
+// 用于监听路由查询参数 q 的变化，并将变化同步到响应式变量 searchQuery 中
+// 当 route.query.q 发生变化时执行回调
+// route.query 是 Vue Router 中的一个响应式对象，用于获取当前 URL 的查询参数（即 URL 中 ? 后面的部分）。
+watch(() => route.query.q, newQ => {
+  searchQuery.value = newQ || ''
+})
+
+
+function handleSearch(){
+
+  // Vue Router 的编程式导航，用于跳转到命名路由并携带查询参数
+  router.push({
+    name:'homepage-index',
+    query:{                      // 查询参数（URL 中的 ?q= value）
+      q:searchQuery.value.trim(),
+    }
+  })
+}
 
 </script>
 
@@ -22,13 +46,13 @@ const user=useUserStore()
           <div class="px-2 font-bold text-xl">AIFriends</div>
         </div>
         <div class="navbar-center w-4/5 max-w-180 flex justify-center">
-          <div class="join w-4/5 flex justify-center">
-            <input class="input join-item rounded-l-full w-4/5" placeholder="搜索你感兴趣的内容" />
+          <form @submit.prevent="handleSearch" class="join w-4/5 flex justify-center">
+            <input v-model="searchQuery" class="input join-item rounded-l-full w-4/5" placeholder="搜索你感兴趣的内容" />
             <button class="btn join-item rounded-r-full gap-0">
               <SearchIcon />
               搜索
             </button>
-          </div>
+          </form>
         </div>
         <div class="navbar-end">
            <RouterLink v-if="user.isLogin()" :to="{name: 'update-character', params: {character_id: 2}}"
