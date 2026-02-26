@@ -14,7 +14,6 @@ class HomePageIndexView(APIView):
             items_count=int(request.query_params.get('items_count'))
             # get() 方法的第二个参数 '' 表示：如果没有找到 search_query 参数，则返回空字符串作为默认值
             search_query=request.query_params.get('search_query','').strip()
-            print(search_query)
             if search_query:
                 queryset=Character.objects.filter(
                     # __icontains：包含且不区分大小写

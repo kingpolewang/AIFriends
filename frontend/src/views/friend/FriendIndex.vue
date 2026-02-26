@@ -27,8 +27,6 @@ async function loadMore(){
       }
     })
     const data = res.data
-    console.log(data.result)
-    console.log(data.friends)
     if(data.result ==='success'){
       newFriends=data.friends
     }
