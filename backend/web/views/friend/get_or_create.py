@@ -19,23 +19,25 @@ class GetOrCreateFriendView(APIView):
                 friend = friends.first()
             else:
                 friend = Friend.objects.create(character_id=character_id, me=user_profile)
-                character = friend.character
-                author = character.author
-                return Response({
-                    'result': 'success',
-                    'friend': {
-                        'id': character.id,
+            character = friend.character
+            author = character.author
+            return Response({
+                'result': 'success',
+                'friend': {
+                    'id': friend.id,
+                    'character':{
                         'name': character.name,
                         'profile': character.profile,
                         'photo': character.photo.url,
                         'background_image': character.background_image.url,
-                        'author':{
+                        'author': {
                             'user_id': author.user_id,
-                            'username':author.user.username,
-                            'photo':author.photo.url,
+                            'username': author.user.username,
+                            'photo': author.photo.url,
                         }
                     }
-                })
+                }
+            })
         except:
             return Response({
                 'result': '系统异常，请稍后重试',
