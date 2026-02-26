@@ -9,12 +9,28 @@ import {useRouter} from "vue-router";
 import ChatField from "@/components/character/chat_field/ChatField.vue";
 
 
-const props = defineProps(['character','canEdit'])
+const props = defineProps(['character','canEdit','canRemoveFriend','friendId'])
 const emit=defineEmits(['remove'])
 const isHover = ref(false)
 const user=useUserStore()
 const router=useRouter()
 
+
+async function handleRemoveFriend(){
+  try{
+    const res=await api.post('api/friend/remove/',{
+      friend_id:props.friendId,
+    })
+    if (res.data.result === 'success'){
+      // 子组件向父组件传递消息
+      // 'remove'：事件名称，父组件通过 @remove 监听
+      // props.friendId：要传递给父组件的数据（载荷）
+      emit('remove',props.friendId)
+    }
+  }catch (err){
+    console.log(err)
+  }
+}
 async function handleRemoveCharacter(){
   try{
     const res = await api.post('api/create/character/remove/',{
@@ -62,11 +78,15 @@ async function openChatField(){
           <RouterLink :to="{name: 'update-character', params: {character_id: character.id}}" class="btn btn-circle btn-ghost bg-transparent">
             <UpdateIcon />
           </RouterLink>
-          <button @click="handleRemoveCharacter" class="btn btn-circle btn-ghost bg-transparent">
+          <button @click.stop="handleRemoveCharacter" class="btn btn-circle btn-ghost bg-transparent">
             <RemoveIcon />
           </button>
         </div>
-
+        <div v-if="canRemoveFriend" class="absolute right-0 top-50">
+          <button @click.stop="handleRemoveFriend" class="btn btn-circle btn-ghost bg-transparent">
+            <RemoveIcon/>
+          </button>
+        </div>
         <div class="absolute left-4 top-54 avatar">
           <div class="w-16 rounded-full ring-3 ring-white">
             <img :src="character.photo" alt="">
