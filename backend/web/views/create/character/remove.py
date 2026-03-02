@@ -27,7 +27,8 @@ class RemoveCharacterView(APIView):
             return Response({
                 'result': 'success',
             })
-        except:
+        except Exception as e:
+            print(e+"_____________________")
             return Response({
                 'result':'系统异常,删除角色失败,请稍后重试'
             })

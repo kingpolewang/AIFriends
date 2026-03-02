@@ -1,5 +1,10 @@
 from django.urls import path, re_path
 
+from web.views.blog.blog.create_blog import CreateBlogView
+from web.views.blog.blog.get_my_list import GetMyListView
+from web.views.blog.blog.remove_blog import RemoveBlogView
+from web.views.blog.blog.update_blog import UpdateBlogView
+from web.views.blog.get_all_blog import GetAllBlogsView
 from web.views.create.character.create import CreateCharacterView
 from web.views.create.character.get_list import GetListCharacterView
 from web.views.create.character.get_single import GetSingleCharacterView
@@ -34,6 +39,13 @@ urlpatterns = [
     path('api/friend/get_list/',GetListFriendView.as_view()),
     path('api/friend/get_or_create/',GetOrCreateFriendView.as_view()),
     path('api/friend/remove/',RemoveFriendsView.as_view()),
+
+    #博客系统模块
+    path('api/blog/create/', CreateBlogView.as_view()),
+    path('api/blog/my_list/',GetMyListView.as_view()),
+    path('api/blog/update/',UpdateBlogView.as_view()),
+    path('api/blog/remove/',RemoveBlogView.as_view()),
+    path('api/blog/list/',GetAllBlogsView.as_view()),
     path('', index),
     re_path(r'^(?!media/|static/|assets/).*$', index)
 ]

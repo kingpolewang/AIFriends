@@ -10,9 +10,9 @@ def photo_upload_to(instance, filename):
     filename = f'{uuid.uuid4().hex[:10]}.{ext}'
     return f'user/photos/{instance.user_id}_{filename}'
 
-
+# Django 会自动为这个模型添加一个名为id的主键字段，等价于你手动写了id = models.AutoField(primary_key=True)
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)         #int
     photo = models.ImageField(default='user/photos/default.png', upload_to=photo_upload_to)
     profile = models.TextField(default='谢谢你的关注', max_length=500)
     create_time = models.DateTimeField(default=now)

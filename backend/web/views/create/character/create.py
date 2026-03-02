@@ -6,7 +6,6 @@ from rest_framework.permissions import IsAuthenticated
 from web.models.character import Character
 from web.models.user import UserProfile
 class CreateCharacterView(APIView): # 继承自APIView，创建API视图
-
     # permission_classes: 权限类列表，控制谁可以访问这个视图
     # IsAuthenticated: 要求用户必须登录才能访问
     permission_classes = [IsAuthenticated]
