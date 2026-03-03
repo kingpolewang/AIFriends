@@ -10,7 +10,7 @@ from web.models.user import UserProfile
 
 #GET api/blog/my_list/?items_count=0&user_id=2
 class GetMyListView(APIView):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     def get(self, request):
         try:
             items_count=int(request.query_params.get('items_count',0))
