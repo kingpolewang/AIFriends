@@ -16,7 +16,6 @@ class GetMyListView(APIView):
             items_count=int(request.query_params.get('items_count',0))
             user_id = int(request.query_params.get('user_id'))
             blogs_raw = Blog.objects.filter(author__user__id=user_id).order_by('-create_time')[items_count:items_count+20]
-            print("数量",blogs_raw)
             blogs=[]
             for blog in blogs_raw:
                 blogs.append({
