@@ -24,7 +24,7 @@ class ChatGraph:
         # 初始化大语言模型客户端
         # ChatOpenAI 兼容OpenAI API格式的模型，这里使用的是DeepSeek
         llm=ChatOpenAI(
-            model='deepseek-v3.2',
+            model='deepseek-chat',
             openai_api_key=os.getenv('API_KEY'),
             openai_api_base=os.getenv('API_BASE'),
         )
@@ -47,7 +47,7 @@ class ChatGraph:
                 返回:更新后的状态，包含模型生成的回复消息
             """
             # 调用大语言模型，传入当前状态中的所有消息
-            res=llm.invoke(state['messages'])
+            res = llm.invoke(state['messages'])
             return {
                 'messages': [res],
             }

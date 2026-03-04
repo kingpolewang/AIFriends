@@ -23,10 +23,10 @@ class MessageChatView(APIView):
         friend = friends.first()
         app=ChatGraph.create_app()
         inputs={
-            'message':[HumanMessage(message)],
+            'messages':[HumanMessage(content=message)],
         }
         res=app.invoke(inputs)
-        print(res['message'][-1].content)
+        print(res['messages'][-1].content)
         return Response({
             'result':'success'
         })
