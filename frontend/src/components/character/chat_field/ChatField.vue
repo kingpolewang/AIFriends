@@ -1,13 +1,16 @@
 <script setup >
-import {computed, useTemplateRef} from "vue";
+import {computed, nextTick, useTemplateRef} from "vue";
 import CharacterPhotoField from "@/components/character/chat_field/character_photo_field/CharacterPhotoField.vue";
 import InputField from "@/components/character/chat_field/input_field/InputField.vue";
 
 const props = defineProps(['friend'])
 const modalRef = useTemplateRef('modal-ref')
-
-function showModal(){
+// 引用InputFieldz子组件
+const inputRef=useTemplateRef('input-ref')
+async function showModal(){
   modalRef.value.showModal()
+  await nextTick()
+  inputRef.value.focus()
 }
 // 将模态框背景图片设置成聊天背景：
 const modalStyle = computed(() => {
@@ -34,7 +37,9 @@ defineExpose({
     <button @click="modalRef.close()" class="btn btn-sm btn-circle btn-ghost bg-transparent absolute right-1 top-1">
       ✕
     </button>
-    <InputField/>
+    <InputField
+      ref="input-ref"
+    />
     <CharacterPhotoField v-if="friend" :character="friend.character"/>
   </div>
 </dialog>
