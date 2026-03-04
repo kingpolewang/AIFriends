@@ -1,7 +1,7 @@
 <script setup >
 import { useRoute } from 'vue-router';
 import UserInfoField from "@/views/user/space/components/UserInfoField.vue";
-import {nextTick, onBeforeUnmount, onMounted, ref, resolveDirective, useTemplateRef} from "vue";
+import {nextTick, onBeforeUnmount, onMounted, ref, resolveDirective, useTemplateRef, watch} from "vue";
 import api from "@/js/http/api.js";
 import Character from "@/components/character/Character.vue";
 const userProfile = ref(null)
@@ -11,7 +11,17 @@ const hasCharacters=ref(true)
 const sentinelRef = useTemplateRef('sentinel-ref')
 const route = useRoute()
 
-
+function reset(){
+  userProfile.value=null
+  characters.value=[]
+  isLoading.value=false
+  hasCharacters.value=true
+  loadMore()
+}
+//监视   user/space/{user_id}/   中的user_id是否发生变化
+watch(()=>route.params.user_id,()=>{
+  reset()
+})
 function removeCharacter(characterId){
   characters.value=characters.value.filter(c=> c.id!== characterId)
 }
