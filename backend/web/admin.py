@@ -4,7 +4,7 @@ from django.contrib import admin
 from web.models.blog import Blog, Tag
 # 2. 导入你的自定义模型
 from web.models.character import Character
-from web.models.friend import Friend
+from web.models.friend import Friend, Message
 from web.models.user import UserProfile
 
 # Register your models here.
@@ -20,7 +20,7 @@ class CharacterAdmin(admin.ModelAdmin): #定义Character模型的管理配置类
 
 @admin.register(Friend)
 class FriendAdmin(admin.ModelAdmin):
-    raw_id_fields = ('me','character')
+    raw_id_fields = ('me','character',)
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     search_fields = ('name',)
@@ -28,3 +28,7 @@ class TagAdmin(admin.ModelAdmin):
 class BlogAdmin(admin.ModelAdmin):
     raw_id_fields = ('author',)
     autocomplete_fields = ('tags',)
+
+@admin.register(Message)
+class MessageAdmin(admin.ModelAdmin):
+    raw_id_fields = ('friend',)
