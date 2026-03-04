@@ -4,6 +4,7 @@ import SendIcon from "@/components/navbar/icons/SendIcon.vue";
 import MicIcon from "@/components/navbar/icons/MicIcon.vue";
 import {ref, useTemplateRef} from "vue";
 import api from "@/js/http/api.js";
+import streamApi from "@/js/http/streamApi.js";
 
 // 父组件传递给子组件
 const props=defineProps(['friendId'])
@@ -11,6 +12,7 @@ const props=defineProps(['friendId'])
 const inputRef=useTemplateRef('input-ref')
 // 获取输入框的内容
 const message=ref('')
+let isProcessing = false
 
 
 // 聚焦函数,打开模态框后聚焦到输入框
@@ -20,18 +22,38 @@ function focus(){
 }
 // 处理发送事件
 async function handleSend(){
+  // 检查是否正在处理中
+  // 如果正在处理，直接返回，避免重复执行
+  if (isProcessing) return
+  isProcessing=true
   const content = message.value.trim()
   if (!content) return
   //发送后清空聊天框
   message.value=''
+
   try {
-    const res=await api.post('/api/friend/message/chat/',{
-      friend_id:props.friendId,
-      message:content
+    await streamApi('/api/friend/message/chat/',{
+      body:{
+        friend_id : props.friendId,
+        message:content,
+      },
+       // 收到消息时的回调函数
+      onmessage(data,isDone){
+        //如果流式响应结束
+        if (isDone){
+          isProcessing=false
+        }else if (data.content){
+          console.log(data.content)
+        }
+      },
+      // 发生错误时的回调函数
+      onerror(err){
+        isProcessing=false
+      },
     })
-    console.log(res.data)
   }catch (err){
     console.log(err)
+    isProcessing=false
   }
 }
 

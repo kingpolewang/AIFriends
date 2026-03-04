@@ -27,6 +27,12 @@ class ChatGraph:
             model='deepseek-chat',
             openai_api_key=os.getenv('API_KEY'),
             openai_api_base=os.getenv('API_BASE'),
+            streaming=True,  # 流式输出
+            model_kwargs = {
+                "stream_options": {
+                    "include_usage": True,  # 输出token消耗数量
+                }
+            }
         )
 
         # 定义Agent的状态类型
