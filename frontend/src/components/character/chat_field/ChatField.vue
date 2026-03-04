@@ -3,6 +3,7 @@ import {computed, nextTick, useTemplateRef} from "vue";
 import CharacterPhotoField from "@/components/character/chat_field/character_photo_field/CharacterPhotoField.vue";
 import InputField from "@/components/character/chat_field/input_field/InputField.vue";
 
+//接受来自父组件Character的参数
 const props = defineProps(['friend'])
 const modalRef = useTemplateRef('modal-ref')
 // 引用InputFieldz子组件
@@ -38,7 +39,9 @@ defineExpose({
       ✕
     </button>
     <InputField
-      ref="input-ref"
+        v-if="friend"
+        :friendId="friend.id"
+        ref="input-ref"
     />
     <CharacterPhotoField v-if="friend" :character="friend.character"/>
   </div>
