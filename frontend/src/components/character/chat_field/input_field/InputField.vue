@@ -6,8 +6,10 @@ import {ref, useTemplateRef} from "vue";
 import api from "@/js/http/api.js";
 import streamApi from "@/js/http/streamApi.js";
 
-// 父组件传递给子组件
+// 父组件（ChatField）传递给子组件 的变量
 const props=defineProps(['friendId'])
+// 接受父组件（ChatField）传来的事件
+const emit =defineEmits(['pushBackMessage','addToLastMessage'])
 
 const inputRef=useTemplateRef('input-ref')
 // 获取输入框的内容
@@ -31,6 +33,22 @@ async function handleSend(){
   //发送后清空聊天框
   message.value=''
 
+  //  发送用户消息
+  // 触发'pushBackMessage'事件，将用户输入的消息推送到消息列表
+  emit('pushBackMessage',
+      {
+        role: 'user',                    // 消息角色：用户
+        content: content,                 // 消息内容：用户输入的内容
+        id: crypto.randomUUID()          // 生成唯一ID：使用Web Crypto API生成随机UUID作为消息标识符
+      })
+  // 发送AI响应消息（初始为空）
+  // 触发'pushBackMessage'事件，创建一个空的AI消息占位符，用于后续流式填充
+  emit('pushBackMessage',
+      {
+          role: 'ai',                       // 消息角色：AI助手
+          content: '',                      // 消息内容：初始为空字符串，等待AI响应逐步填充
+          id: crypto.randomUUID()           // 生成唯一ID：使用Web Crypto API生成随机UUID作为消息标识符
+      })
   try {
     await streamApi('/api/friend/message/chat/',{
       body:{
@@ -43,7 +61,8 @@ async function handleSend(){
         if (isDone){
           isProcessing=false
         }else if (data.content){
-          console.log(data.content)
+          // 触发'addToLastMessage'事件，将新内容添加到当前会话中最后一条消息的末尾
+          emit('addToLastMessage',data.content) // 要追加的内容：从data对象中获取的content字段
         }
       },
       // 发生错误时的回调函数
