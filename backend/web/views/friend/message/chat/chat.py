@@ -9,7 +9,7 @@ from rest_framework.renderers import BaseRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from web.models.friend import Friend
+from web.models.friend import Friend, Message
 from web.views.friend.message.chat.graph import ChatGraph
 
 # 定义一个伪渲染器，防止 DRF 报错
@@ -40,24 +40,42 @@ class MessageChatView(APIView):
         # 处理流式消息事件的生成器函数，主要作用是将AI模型的流式输出转换为Server-Sent Events (SSE) 格式
         # yield是Python的生层器
         def event_stream():
-            final_usage = {}        # 用于存储最终的token使用统计信息
+            full_output = ''
+            full_usage = {}        # 用于存储最终的token使用统计信息
             # 从app.stream获取消息和元数据，stream_mode="messages"表示以消息块形式返回
             for msg, metadata in app.stream(inputs, stream_mode="messages"):
                 # 检查消息是否为BaseMessageChunk类型（消息块）
                 if isinstance(msg, BaseMessageChunk):
                     # 如果消息包含实际内容，将其包装为SSE格式
                     if msg.content:
+                        full_output += msg.content
                         # 使用json.dumps确保中文正确显示（ensure_ascii=False）
                         yield f"data: {json.dumps({'content': msg.content}, ensure_ascii=False)}\n\n"
                     # 检查并记录token使用统计信息（如输入 / 输出token数）
                     if hasattr(msg, 'usage_metadata') and msg.usage_metadata:
-                        final_usage = msg.usage_metadata         #持续更新，最终保留最后一条统计
+                        full_usage = msg.usage_metadata         #持续更新，最终保留最后一条统计
             # 发送流式结束标记
             yield "data: [DONE]\n\n"
             # 打印最终的token使用统计（仅用于调试/监控）
-            print(final_usage)
-        for data in event_stream():
-            print(data)
+            print(full_usage)
+            input_tokens = full_usage.get('input_tokens',0)
+            output_tokens = full_usage.get('output_tokens',0)
+            total_tokens = full_usage.get('total_tokens',0)
+            Message.objects.create(
+                friend=friend,
+                user_message=message[:1000],
+                input = json.dumps(
+                    [m.model_dump() for m in inputs['messages'] ],
+                    ensure_ascii=False,
+                )[:20000],
+                output=full_output[:1000],
+                input_tokens=input_tokens,
+                output_tokens=output_tokens,
+                total_tokens=total_tokens,
+            )
+
+        # for data in event_stream():
+        #     print(data)
 
         # 创建流式HTTP响应
         # StreamingHttpResponse是Django的特殊响应类，用于流式传输数据
