@@ -10,7 +10,7 @@ const modalRef = useTemplateRef('modal-ref')
 // 引用InputFieldz子组件
 const inputRef=useTemplateRef('input-ref')
 
-const chatHistoryRef = useTemplateRef('chat-history-ref')
+// const chatHistoryRef = useTemplateRef('chat-history-ref')
 const history = ref([])
 
 async function showModal(){
