@@ -14,8 +14,8 @@ class GetHistoryView(APIView):
             friend_id = request.query_params.get('friend_id')
             queryset = Message.objects.filter(friend_id=friend_id,friend__me__user=request.user)
             if last_message_id >0:
-                queryset = queryset.filter(id_lt=last_message_id)
-            messages_raw = queryset.order_by('-id')[-1]
+                queryset = queryset.filter(id__lt=last_message_id)
+            messages_raw = queryset.order_by('-id')[:20]
             messages=[]
             for m in messages_raw:
                 messages.append({
@@ -27,7 +27,8 @@ class GetHistoryView(APIView):
                 'result': 'success',
                 'messages': messages,
             })
-        except:
+        except Exception as e:
+            print(e)
             return Response({
                 'result': '系统异常，请稍后重试',
             })
