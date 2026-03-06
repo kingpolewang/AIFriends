@@ -13,7 +13,7 @@ const user=useUserStore()
           <img :src="character.photo" alt="">
         </div>
       </div>
-      <div class="chat-bubble chat-bubble-info">
+      <div class="chat-bubble chat-bubble-info whitespace-pre-wrap">
         {{message.content}}
       </div>
     </div>
@@ -23,7 +23,7 @@ const user=useUserStore()
           <img :src="user.photo" alt="">
         </div>
       </div>
-      <div class="chat-bubble chat-bubble-success">
+      <div class="chat-bubble chat-bubble-success whitespace-pre-wrap">
         {{message.content}}
       </div>
     </div>
