@@ -2,12 +2,24 @@
 
 //接受父组件传递过来的参数
 import Message from "@/components/character/chat_field/chat_history/message/Message.vue";
+import {nextTick, useTemplateRef} from "vue";
 
 const props = defineProps(['history','friendId','character'])
+const scrollRef=useTemplateRef('scroll-ref')
+async function scrollToBottom(){
+  // 等待渲染完
+  await nextTick()
+  // 改变scrollTop的值来实现滚动功能
+  scrollRef.value.scrollTop = scrollRef.value.scrollHeight
+}
+defineExpose({
+  // 在父组件实现滚动
+  scrollToBottom
+})
 </script>
 
 <template>
-  <div class="absolute top-18 left-0 w-90 h-112 overflow-y-scroll no-scrollbar">
+  <div ref="scroll-ref" class="absolute top-18 left-0 w-90 h-112 overflow-y-scroll no-scrollbar">
     <Message
       v-for="message in history"
       :key="message.id"

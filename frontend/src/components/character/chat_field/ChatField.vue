@@ -10,7 +10,7 @@ const modalRef = useTemplateRef('modal-ref')
 // 引用InputFieldz子组件
 const inputRef=useTemplateRef('input-ref')
 
-// const chatHistoryRef = useTemplateRef('chat-history-ref')
+const chatHistoryRef = useTemplateRef('chat-history-ref')
 const history = ref([])
 
 async function showModal(){
@@ -37,12 +37,12 @@ function handlePushBackMessage(msg){
   // 将新消息添加到历史列表
   history.value.push(msg)
   // 滚动聊天窗口到底部
-  // chatHistoryRef.value.scrollToBottom()
+  chatHistoryRef.value.scrollToBottom()
 }
 // 在最后一条消息上补充内容
 function handleAddToLastMessage(delta){
   history.value.at(-1).content+=delta
-  // chatHistoryRef.value.scroll
+  chatHistoryRef.value.scrollToBottom()
 }
 
 
@@ -59,10 +59,11 @@ defineExpose({
     </button>
 
     <ChatHistory
-      v-if="friend"
-      :friendId="friend.id"
-      :character="friend.character"
-      :history="history"
+        ref="chat-history-ref"
+        v-if="friend"
+        :friendId="friend.id"
+        :character="friend.character"
+        :history="history"
     />
 
     <!-- 父组件 定义两个事件pushBackMessage，addToLastMessage 进行父->子   -->
