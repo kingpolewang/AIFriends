@@ -44,7 +44,10 @@ function handleAddToLastMessage(delta){
   history.value.at(-1).content+=delta
   chatHistoryRef.value.scrollToBottom()
 }
-
+//往上加消息,通过事件传递给子组件
+function handlePushFrontMessage(msg){
+  history.value.unshift(msg)
+}
 
 defineExpose({
   showModal,
@@ -64,6 +67,7 @@ defineExpose({
         :friendId="friend.id"
         :character="friend.character"
         :history="history"
+        @pushFrontMessage="handlePushFrontMessage"
     />
 
     <!-- 父组件 定义两个事件pushBackMessage，addToLastMessage 进行父->子   -->
