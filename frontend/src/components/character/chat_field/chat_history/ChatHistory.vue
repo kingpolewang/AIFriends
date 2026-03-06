@@ -25,7 +25,6 @@ async function loadMore(){
       }
     })
     const data=res.data
-    console.log(data)
     if (data.result === 'success'){
       newMessages=data.messages
     }

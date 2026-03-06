@@ -4,7 +4,7 @@ from django.contrib import admin
 from web.models.blog import Blog, Tag
 # 2. 导入你的自定义模型
 from web.models.character import Character
-from web.models.friend import Friend, Message
+from web.models.friend import Friend, Message, SystemPrompt
 from web.models.user import UserProfile
 
 # Register your models here.
@@ -32,3 +32,6 @@ class BlogAdmin(admin.ModelAdmin):
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
     raw_id_fields = ('friend',)
+
+# 简单注册 - 使用默认的展示方式
+admin.site.register(SystemPrompt)

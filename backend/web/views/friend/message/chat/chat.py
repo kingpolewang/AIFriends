@@ -1,14 +1,14 @@
 import json
-from http.client import responses
+from pprint import pprint
 
 from django.http import StreamingHttpResponse
-from langchain_core.messages import HumanMessage, BaseMessageChunk
+from langchain_core.messages import HumanMessage, BaseMessageChunk, AIMessage, SystemMessage
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import BaseRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from web.models.friend import Friend, Message
+from web.models.friend import Friend, Message, SystemPrompt
 from web.views.friend.message.chat.graph import ChatGraph
 
 # 定义一个伪渲染器，防止 DRF 报错
@@ -18,6 +18,32 @@ class SSERenderer(BaseRenderer):
     def render(self, data, accepted_media_type=None, renderer_context=None):
         return data
 
+# 添加系统提示词
+def add_system_prompt(state,friend):
+    msgs=state['messages']
+    system_prompts=SystemPrompt.objects.filter(title='回复').order_by('order_number')
+    prompt=''
+    for sp in system_prompts:
+        prompt+=sp.prompt
+    prompt += f"\n[角色性格]\n{friend.character.profile}\n"
+    return {
+        'messages': [SystemMessage(prompt)]+msgs,
+    }
+# 添加最近的消息
+def add_recent_message(state,friend):
+    msgs=state['messages']
+    message_raw=list(Message.objects.filter(friend=friend).order_by('-id')[:20])
+    message_raw.reverse()
+    print(f"message_raw:    {message_raw}")
+    messages=[]
+    for m in message_raw:
+        # LangChain 库的代码，用于创建一个人类消息
+        # HumanMessage 是 LangChain 中的一个消息类型，用于表示用户/人类发送的消息
+        messages.append(HumanMessage(m.user_message))
+        messages.append(AIMessage(m.output))
+    return {
+        'messages': msgs[:1]+messages+msgs[-1:],
+    }
 class MessageChatView(APIView):
     permission_classes = (IsAuthenticated,)
     renderer_classes = (SSERenderer,)
@@ -36,6 +62,9 @@ class MessageChatView(APIView):
         inputs={
             'messages':[HumanMessage(content=message)],
         }
+        inputs=add_system_prompt(inputs,friend)
+        inputs=add_recent_message(inputs,friend)
+        # pprint(inputs)
         # 处理流式消息事件的生成器函数，主要作用是将AI模型的流式输出转换为Server-Sent Events (SSE) 格式
         # yield是Python的生层器
         def event_stream():
