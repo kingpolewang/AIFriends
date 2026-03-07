@@ -2,13 +2,18 @@ import os
 from pprint import pprint
 from typing import TypedDict, Annotated, Sequence
 
+import lancedb
 from django.utils.timezone import localtime, now
+from langchain_community.vectorstores import LanceDB
 from langchain_core.messages import BaseMessage
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 from langgraph.constants import START, END
 from langgraph.graph import add_messages, StateGraph
 from langgraph.prebuilt import ToolNode
+from openai import embeddings
+
+from web.documents.utils.custom_embeddings import CustomEmbeddings
 
 
 #对接大模型
@@ -29,7 +34,20 @@ class ChatGraph:
         def get_time() -> str:
             """查询精确时间时，调用此函数。返回格式为：[年-月-日-时-分-秒]"""
             return localtime(now()).strftime("%Y-%m-%d %H:%M:%S")
-        tools=[get_time]
+        @tool
+        def search_knowledge_base(query:str) -> str:
+            """当用户查询阿里云百炼平台相关信息时，调用此函数。输入为要查询的问题，输出为查询结果"""
+            db=lancedb.connect('./web/documents/lancedb_storage')
+            embeddings=CustomEmbeddings()
+            vector_db=LanceDB(
+                connection=db,
+                embedding=embeddings,
+                table_name='my_knowledge_base',
+            )
+            docs = vector_db.similarity_search(query,k=3)
+            context = '\n\n'.join([f'内容片段:{i+1}\n{docs.page_content}' for i,docs in enumerate(docs)])
+            return f'从知识库中找到以下相关信息:\n\n{context}\n'
+        tools=[get_time,search_knowledge_base]
         # 初始化大语言模型客户端
         # ChatOpenAI 兼容OpenAI API格式的模型，这里使用的是DeepSeek
         llm=ChatOpenAI(
@@ -61,7 +79,7 @@ class ChatGraph:
                 参数: state: 当前的Agent状态，包含消息列表
                 返回:更新后的状态，包含模型生成的回复消息
             """
-            pprint(state)
+            pprint(state['messages'])
             # 调用大语言模型，传入当前状态中的所有消息
             res = llm.invoke(state['messages'])
             return {

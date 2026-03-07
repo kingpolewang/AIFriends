@@ -30,9 +30,9 @@ def update_memory(friend):
             create_human_message(friend)
         ],
     }
-    pprint(inputs)
+    # pprint(inputs)
     res = graph.invoke(inputs)
     friend.memory = res['messages'][-1].content
-    pprint(friend.memory)
+    # pprint(friend.memory)
     friend.update_time=now()
     friend.save()

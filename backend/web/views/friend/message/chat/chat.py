@@ -37,7 +37,6 @@ def add_recent_message(state,friend):
     msgs=state['messages']
     message_raw=list(Message.objects.filter(friend=friend).order_by('-id')[:20])
     message_raw.reverse()
-    print(f"message_raw:    {message_raw}")
     messages=[]
     for m in message_raw:
         # LangChain 库的代码，用于创建一个人类消息
