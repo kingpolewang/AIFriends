@@ -25,9 +25,14 @@ function focus(){
   inputRef.value.focus()
 }
 // 处理发送事件
-async function handleSend(){
-
-  const content = message.value.trim()
+async function handleSend(event,audio_msg){
+  let content
+  if (audio_msg){
+    content=audio_msg.trim()
+  }else
+  {
+    content = message.value.trim()
+  }
   if (!content) return
 
   //将当前版本号存下来
@@ -75,7 +80,9 @@ function close(){
   ++processId
   showMic.value=false
 }
-
+function handleStop(){
+  ++processId
+}
 defineExpose({
   focus,
   close,
@@ -102,6 +109,8 @@ defineExpose({
   <Microphone
       v-else-if="showMic"
       @close="showMic=false"
+      @send="handleSend"
+      @stop="handleStop"
   />
 </template>
 
