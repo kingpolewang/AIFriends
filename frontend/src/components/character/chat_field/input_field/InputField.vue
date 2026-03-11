@@ -14,8 +14,8 @@ const emit =defineEmits(['pushBackMessage','addToLastMessage'])
 const inputRef=useTemplateRef('input-ref')
 // 获取输入框的内容
 const message=ref('')
-let isProcessing = false
 
+let processId=0
 
 // 聚焦函数,打开模态框后聚焦到输入框
 function focus(){
@@ -28,11 +28,8 @@ async function handleSend(){
   const content = message.value.trim()
   if (!content) return
 
-  // 检查是否正在处理中
-  // 如果正在处理，直接返回，避免重复执行
-  if (isProcessing) return
-  isProcessing=true
-
+  //将当前版本号存下来
+  const curId = ++ processId
   //发送后清空聊天框
   message.value=''
 
@@ -59,23 +56,17 @@ async function handleSend(){
         message:content,
       },
        // 收到消息时的回调函数
-      onmessage(data,isDone){
-        //如果流式响应结束
-        if (isDone){
-          isProcessing=false
-        }else if (data.content){
+      onmessage(data){
+        if (curId!==processId) return
+        if (data.content){
           // 触发'addToLastMessage'事件，将新内容添加到当前会话中最后一条消息的末尾
           emit('addToLastMessage',data.content) // 要追加的内容：从data对象中获取的content字段
         }
       },
-      // 发生错误时的回调函数
-      onerror(err){
-        isProcessing=false
-      },
     })
   }catch (err){
     console.log(err)
-    isProcessing=false
+
   }
 }
 
