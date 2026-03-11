@@ -24,12 +24,15 @@ function focus(){
 }
 // 处理发送事件
 async function handleSend(){
+
+  const content = message.value.trim()
+  if (!content) return
+
   // 检查是否正在处理中
   // 如果正在处理，直接返回，避免重复执行
   if (isProcessing) return
   isProcessing=true
-  const content = message.value.trim()
-  if (!content) return
+
   //发送后清空聊天框
   message.value=''
 
