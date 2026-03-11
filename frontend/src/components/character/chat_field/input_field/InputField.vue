@@ -5,6 +5,7 @@ import MicIcon from "@/components/navbar/icons/MicIcon.vue";
 import {ref, useTemplateRef} from "vue";
 import api from "@/js/http/api.js";
 import streamApi from "@/js/http/streamApi.js";
+import Microphone from "@/components/character/chat_field/input_field/Microphone.vue";
 
 // 父组件（ChatField）传递给子组件 的变量
 const props=defineProps(['friendId'])
@@ -16,7 +17,8 @@ const inputRef=useTemplateRef('input-ref')
 const message=ref('')
 
 let processId=0
-
+//是否显示麦克风
+const showMic =ref(false)
 // 聚焦函数,打开模态框后聚焦到输入框
 function focus(){
   // 通过 ref 引用获取 DOM 元素，并调用它的 focus() 方法
@@ -69,29 +71,38 @@ async function handleSend(){
 
   }
 }
+function close(){
+  ++processId
+  showMic.value=false
+}
 
 defineExpose({
-  focus
+  focus,
+  close,
 })
 </script>
 
 <template>
-<!-- 回车也能触发  将div变成form -->
-<form @submit.prevent="handleSend" class="absolute bottom-4 left-2 h-12 w-86 flex items-center">
-  <input
-      v-model="message"
-      ref="input-ref"
-      class="input bg-black/30 backdrop-blur-sm text-white text-base w-full h-full rounded-2xl pr-20"
-      type="text"
-      placeholder="请输入..."
-  >
-  <div @click="handleSend" class="absolute right-2 w-8 h-8 flex justify-center items-center cursor-pointer">
-    <SendIcon/>
-  </div>
-  <div class="absolute right-10 w-8 h-8 flex justify-center items-center cursor-pointer">
-    <MicIcon/>
-  </div>
-</form>
+  <!-- 回车也能触发  将div变成form -->
+  <form v-if="!showMic" @submit.prevent="handleSend" class="absolute bottom-4 left-2 h-12 w-86 flex items-center">
+    <input
+        v-model="message"
+        ref="input-ref"
+        class="input bg-black/30 backdrop-blur-sm text-white text-base w-full h-full rounded-2xl pr-20"
+        type="text"
+        placeholder="请输入..."
+    >
+    <div @click="handleSend" class="absolute right-2 w-8 h-8 flex justify-center items-center cursor-pointer">
+      <SendIcon/>
+    </div>
+    <div @click="showMic=true" class="absolute right-10 w-8 h-8 flex justify-center items-center cursor-pointer">
+      <MicIcon/>
+    </div>
+  </form>
+  <Microphone
+      v-else-if="showMic"
+      @close="showMic=false"
+  />
 </template>
 
 <style scoped>
