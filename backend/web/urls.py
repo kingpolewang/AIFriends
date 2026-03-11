@@ -12,6 +12,7 @@ from web.views.create.character.remove import RemoveCharacterView
 from web.views.create.character.update import UpdateCharacterView
 from web.views.friend.get_list import GetListFriendView
 from web.views.friend.get_or_create import GetOrCreateFriendView
+from web.views.friend.message.asr.asr import ASRView
 from web.views.friend.message.chat.chat import MessageChatView
 from web.views.friend.message.get_history import GetHistoryView
 from web.views.friend.remove import RemoveFriendsView
@@ -41,8 +42,13 @@ urlpatterns = [
     path('api/friend/get_list/',GetListFriendView.as_view()),
     path('api/friend/get_or_create/',GetOrCreateFriendView.as_view()),
     path('api/friend/remove/',RemoveFriendsView.as_view()),
+
+    #对话模块
     path('api/friend/message/chat/', MessageChatView.as_view()),
     path('api/friend/message/get_history/',GetHistoryView.as_view()),
+
+    #语音模块
+    path('api/friend/message/asr/asr/',ASRView.as_view()),
 
     #博客系统模块
     path('api/blog/create/', CreateBlogView.as_view()),

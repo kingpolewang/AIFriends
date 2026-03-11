@@ -10,8 +10,6 @@ const isSpeaking=ref(false)
 
 
 //引入语音
-
-
 let vadInstance = null;
 const startRecording = async () => {
   const baseUrl = "http://localhost:5173/vad/";
@@ -59,8 +57,9 @@ const sendToBackend = async (arrayBuffer) => {
   const formData=new FormData()
   formData.append("audio",blob,"voice.pcm")
   try{
-    const res=await api.post('',formData)
+    const res=await api.post('/api/friend/message/asr/asr/',formData)
     const data=res.data
+    console.log(data)
     if (data.result === 'success'){
       emit('send',null,data.text)
     }
