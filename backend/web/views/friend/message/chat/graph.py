@@ -11,7 +11,7 @@ from langchain_openai import ChatOpenAI
 from langgraph.constants import START, END
 from langgraph.graph import add_messages, StateGraph
 from langgraph.prebuilt import ToolNode
-from openai import embeddings
+
 
 from web.documents.utils.custom_embeddings import CustomEmbeddings
 
