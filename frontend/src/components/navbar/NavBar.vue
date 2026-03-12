@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 
 import MenuIcon from "@/components/navbar/icons/MenuIcon.vue";
 import HomepageIcon from "@/components/navbar/icons/HomepageIcon.vue";
@@ -8,6 +8,7 @@ import { useUserStore } from "@/stores/user";
 import UserMenu from "@/components/navbar/UserMenu.vue";
 import {ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
+import SearchIcon from "@/components/navbar/icons/SearchIcon.vue";
 const user=useUserStore()
 
 const searchQuery = ref('')
@@ -49,17 +50,17 @@ function handleSearch(){
           <form @submit.prevent="handleSearch" class="join w-4/5 flex justify-center">
             <input v-model="searchQuery" class="input join-item rounded-l-full w-4/5" placeholder="搜索你感兴趣的内容" />
             <button class="btn join-item rounded-r-full gap-0">
-              <SearchIcon />
+              <SearchIcon/>
               搜索
             </button>
           </form>
         </div>
         <div class="navbar-end">
-           <RouterLink v-if="user.isLogin()" :to="{name: 'update-character', params: {character_id: 2}}"
+           <RouterLink v-if="user.isLogin()" :to="{name: 'create-index'}"
                        active-class="btn-active" class="btn btn-ghost text-base mr-6">
             <CreateIcon/>
-            更新角色
-          </RouterLink>
+            创作
+           </RouterLink>
           <!--   没有登录展示     -->
           <RouterLink v-if="user.hasPulledUserInfo && !user.isLogin()" :to="{name: 'user-account-login-index'}"
                       active-class="btn-active" class="btn btn-ghost text-lg">

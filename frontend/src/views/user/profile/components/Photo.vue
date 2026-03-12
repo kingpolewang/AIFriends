@@ -80,10 +80,10 @@ defineExpose({
 <template>
   <div class="flex justify-center">
     <div class="avatar relative">
-      <div v-if="myPhoto" class="w-28 rounded-full">
+      <div class="w-28 rounded-full">
         <img :src="myPhoto" alt="">
       </div>
-      <div v-else @click="fileInputRef.click()" class="absolute left-0 top-0 w-28 h-28 flex justify-center
+      <div @click="fileInputRef.click()" class="absolute left-0 top-0 w-28 h-28 flex justify-center
            items-center bg-black/20 rounded-full cursor-pointer">
         <CameraIcon />
       </div>
@@ -93,16 +93,16 @@ defineExpose({
   <input ref="file-input-ref" type="file" accept="image/*" class="hidden" @change="onFileChange">
   <dialog ref="modal-ref" class="modal">
     <div class="modal-box transition-none">
-      <button @click="modalRef.close()" class="btn btn-circle btn-sm btn-ghost
-        absolute right-2 top-2">✕</button>
+      <button @click="modalRef.close()" class="btn btn-circle btn-sm btn-ghost absolute right-2 top-2">✕</button>
+
+      <!-- croppie-ref 定义croppie绑定的标签  -->
+      <div ref="croppie-ref" class="flex flex-col justify-center my-4"></div>
+      <div class="modal-action">
+        <button @click="modalRef.close()" class="btn">取消</button>
+        <button @click="crop" class="btn">确定</button>
+      </div>
     </div>
 
-    <!-- croppie-ref 定义croppie绑定的标签  -->
-    <div ref="croppie-ref" class="flex flex-col justify-center my-4"></div>
-    <div class="modal-action">
-      <button @click="modalRef.close()" class="btn">取消</button>
-      <button @click="crop" class="btn">确定</button>
-    </div>
   </dialog>
 
 </template>

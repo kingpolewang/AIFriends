@@ -12,17 +12,19 @@ import {useUserStore} from "@/stores/user.js";
 const user = useUserStore()
 const router = useRouter()
 const route = useRoute()
-const characterId = route.params.character_id
+let characterId = route.params.character_id
 const character = ref(null)
 
 onMounted(async () => {
   try {
+    console.log(characterId)
     const res = await api.get('/api/create/character/get_single/', {
       params: {
         character_id: characterId,
       }
     })
     const data = res.data
+    console.log(data)
     if (data.result === 'success') {
       character.value = data.character
     }
@@ -79,6 +81,7 @@ async function handleUpdate() {
         errorMessage.value = data.result
       }
     } catch (err) {
+      console.error(err)
     }
   }
 }
