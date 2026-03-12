@@ -37,7 +37,6 @@ def add_system_prompt(state,friend):
     prompt += f"\n[角色性格]\n{friend.character.profile}\n"
     prompt += f"【长期记忆】\n{friend.memory}\n"
     prompt += f"[ai的姓名]\n{friend.character.name}\n"
-    print(f"_________________{friend.character.name}________________")
     return {
         'messages': [SystemMessage(prompt)]+msgs,
     }
@@ -92,6 +91,9 @@ class MessageChatView(APIView):
         # 设置缓存控制头，禁用缓存
         # 确保客户端不会缓存SSE数据，实现真正的实时推送
         response['Cache-Control'] = 'no-cache'
+
+        #避免Nginx缓存
+        response['X-Accel-Buffering'] = 'no'
         # 返回流式响应
         # 连接将保持打开状态，持续推送数据直到event_stream()结束
         return response
@@ -154,11 +156,11 @@ class MessageChatView(APIView):
                     "model": "cosyvoice-v3-flash",
                     "parameters": {
                         "text_type": "PlainText",
-                        "voice": "longantai_v3",  # 音色  longhouge_v3   longdaiyu_v3
+                        "voice": "longantai_v3",  # 音色  longhouge_v3   longdaiyu_v3 longantai_v3
                         "format": "mp3",  # 音频格式
                         "sample_rate": 22050,  # 采样率
                         "volume": 50, # 音量
-                        "rate": 1.5, # 语速
+                        "rate": 1.25, # 语速
                         "pitch": 1 # 音调
                     },
                     "input": {  # input不能省去，不然会报错
@@ -202,7 +204,7 @@ class MessageChatView(APIView):
         # 发送流式结束标记
         yield "data: [DONE]\n\n"
         # 打印最终的token使用统计（仅用于调试/监控）
-        print(full_usage)
+        # print(full_usage)
         input_tokens = full_usage.get('input_tokens', 0)
         output_tokens = full_usage.get('output_tokens', 0)
         total_tokens = full_usage.get('total_tokens', 0)

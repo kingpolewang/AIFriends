@@ -79,7 +79,7 @@ class ChatGraph:
                 参数: state: 当前的Agent状态，包含消息列表
                 返回:更新后的状态，包含模型生成的回复消息
             """
-            pprint(state['messages'])
+            # pprint(state['messages'])
             # 调用大语言模型，传入当前状态中的所有消息
             res = llm.invoke(state['messages'])
             return {
