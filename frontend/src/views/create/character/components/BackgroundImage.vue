@@ -3,7 +3,26 @@ import {nextTick, onBeforeUnmount, ref, useTemplateRef, watch} from "vue";
 import CameraIcon from "@/views/user/profile/components/icon/CameraIcon.vue";
 import Croppie from "croppie";
 
-const props = defineProps(['backgroundImage'])
+const props = defineProps({
+  backgroundImage: String,
+  // 裁剪宽度
+  viewportWidth: {
+    type: Number,
+    default: 200
+  },
+
+  // 裁剪比例  (1 = 1:1)
+  aspectRatio: {
+    type: Number,
+    default: 1
+  },
+  // 裁剪形状
+  viewportType: {
+    type: String,
+    default: 'square'
+  }
+})
+const getViewportHeight = () => props.viewportWidth / props.aspectRatio;
 const myBackgroundImage = ref(props.backgroundImage)
 
 watch(()=>props.backgroundImage,newVal=>{
@@ -18,12 +37,22 @@ async function openModal(photo){
   modalRef.value.showModal()
   await nextTick()
   if (!croppie){
+    const vH = getViewportHeight();
     croppie = new Croppie(croppieRef.value,{
-      viewport:{width:200,height:200,},
-      boundary:{width:300,height:300},
-      enableOrientation:true,
-      enforceBoundary:true,
-    })
+        viewport:{
+          width: props.viewportWidth,
+          height: vH,
+          type: props.viewportType
+        },
+
+        boundary:{
+          width: props.viewportWidth + 40,
+          height: vH + 40
+        },
+        enableOrientation:true,
+        enforceBoundary:true,
+        showZoomer:true
+      })
   }
   croppie.bind({
     url:photo,
@@ -33,7 +62,7 @@ async function crop(){
   if (!croppie) return
   myBackgroundImage.value=await croppie.result({
     type:'base64',
-    size:'viewport',
+    size: { width: 1080 },
   })
   modalRef.value.close()
 }

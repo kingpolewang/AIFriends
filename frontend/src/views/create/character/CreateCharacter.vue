@@ -64,10 +64,14 @@ async function handleCreate(){
   <div class="card w-120 bg-base-200 shadow-sm mt-16">
     <div class="card-body">
       <h3 class="text-lg font-bold my-4">创建角色</h3>
-      <Photo ref="photo-ref"/>
+      <Photo ref="photo-ref" :aspectRatio="1" />
       <Name ref="name-ref" />
       <Profile ref="profile-ref"/>
-      <BackgroundImage ref="background-image-ref"/>
+      <BackgroundImage
+          ref="background-image-ref"
+          :viewportWidth="200"
+          :aspectRatio="9/15"
+      />
       <p v-if="errorMessage" class="text-sm text-red-500">{{errorMessage}}</p>
       <div class="flex justify-center">
         <button @click="handleCreate" class="btn btn-neutral w-60 mt-2">创建</button>

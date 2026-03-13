@@ -92,10 +92,18 @@ async function handleUpdate() {
     <div class="card w-120 bg-base-200 shadow-sm mt-16">
       <div class="card-body">
         <h3 class="text-lg font-bold my-4">更新角色</h3>
-        <Photo ref="photo-ref" :photo="character.photo" />
+        <Photo ref="photo-ref" :photo="character.photo" :aspectRatio="1" />
         <Name ref="name-ref" :name="character.name" />
         <Profile ref="profile-ref" :profile="character.profile" />
-        <BackgroundImage ref="background-image-ref" :backgroundImage="character.background_image" />
+
+        <BackgroundImage
+            ref="background-image-ref"
+            :backgroundImage="character.background_image"
+            :viewportWidth="200"
+            :aspectRatio="9/15"
+        />
+        <!--:viewportWidth="320"-->
+        <!-- :aspectRatio="16/9"-->
 
         <p v-if="errorMessage" class="text-sm text-red-500">{{ errorMessage }}</p>
 

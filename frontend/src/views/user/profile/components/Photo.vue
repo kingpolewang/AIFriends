@@ -5,7 +5,28 @@ import 'croppie/croppie.css'
 import {nextTick, onBeforeMount, onBeforeUnmount, ref, useTemplateRef, watch} from "vue";
 import CameraIcon from "@/views/user/profile/components/icon/CameraIcon.vue";
 
-const props = defineProps(['photo'])
+const props = defineProps({
+  photo: String,
+
+  // 裁剪宽度
+  viewportWidth: {
+    type: Number,
+    default: 200
+  },
+
+  // 裁剪比例  (1 = 1:1)
+  aspectRatio: {
+    type: Number,
+    default: 1
+  },
+
+  // 裁剪形状
+  viewportType: {
+    type: String,
+    default: 'square'
+  }
+})
+const viewportHeight = () => props.viewportWidth / props.aspectRatio
 const myPhoto = ref(props.photo)
 
 watch(() => props.photo, newVal => {
@@ -22,12 +43,21 @@ async function openModal(photo){
   modalRef.value.show()
   await nextTick()
   if (!croppie){
-    croppie=new Croppie(croppieRef.value,{  //创造croppie对象
-      viewport:{width:200,height:200,type:'square'},
-      boundary:{width:300,height:300},
-      enableOrientation:true,
-      enforceBoundary:true,
-    })
+    croppie = new Croppie(croppieRef.value,{
+        viewport:{
+          width: props.viewportWidth,
+          height: viewportHeight(),
+          type: props.viewportType
+        },
+
+        boundary:{
+          width: props.viewportWidth + 120,
+          height: viewportHeight() + 120
+        },
+        enableOrientation:true,
+        enforceBoundary:true,
+        showZoomer:true
+      })
   }
   croppie.bind({   //绑定裁剪图片
     url:photo,

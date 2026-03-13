@@ -26,6 +26,14 @@ const modalStyle = computed(() => {
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
+
+      // 兼容性最好的增强清晰度方案
+      imageRendering: 'auto',
+      // 针对 Webkit 内核（Safari/Chrome）的特殊优化
+      webkitImageRendering: 'optimize-contrast',
+
+      // 硬件加速，防止缩放模糊
+      transform: 'translateZ(0)',
     }
   } else {
     return {}
@@ -59,29 +67,31 @@ defineExpose({
 
 <template>
 <dialog ref="modal-ref" class="modal">
-  <div class="modal-box w-90 h-150" :style="modalStyle">
-    <button @click="handleClose" class="btn btn-sm btn-circle btn-ghost bg-transparent absolute right-1 top-1">
-      ✕
-    </button>
+  <div class="modal-box w-90 h-150 p-0 overflow-hidden" :style="modalStyle">
+    <div class="flex flex-col h-full bg-black/10 relative">
+      <button @click="handleClose" class="btn btn-sm btn-circle btn-ghost bg-black/20 text-white absolute right-1 top-1 z-50">
+        ✕
+      </button>
 
-    <ChatHistory
-        ref="chat-history-ref"
-        v-if="friend"
-        :friendId="friend.id"
-        :character="friend.character"
-        :history="history"
-        @pushFrontMessage="handlePushFrontMessage"
-    />
+      <ChatHistory
+          ref="chat-history-ref"
+          v-if="friend"
+          :friendId="friend.id"
+          :character="friend.character"
+          :history="history"
+          @pushFrontMessage="handlePushFrontMessage"
+      />
 
-    <!-- 父组件 定义两个事件pushBackMessage，addToLastMessage 进行父->子   -->
-    <InputField
-        v-if="friend"
-        :friendId="friend.id"
-        ref="input-ref"
-        @pushBackMessage="handlePushBackMessage"
-        @addToLastMessage="handleAddToLastMessage"
-    />
-    <CharacterPhotoField v-if="friend" :character="friend.character"/>
+      <!-- 父组件 定义两个事件pushBackMessage，addToLastMessage 进行父->子   -->
+      <InputField
+          v-if="friend"
+          :friendId="friend.id"
+          ref="input-ref"
+          @pushBackMessage="handlePushBackMessage"
+          @addToLastMessage="handleAddToLastMessage"
+      />
+      <CharacterPhotoField v-if="friend" :character="friend.character"/>
+    </div>
   </div>
 </dialog>
 </template>
