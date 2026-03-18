@@ -57,7 +57,6 @@ function handlePushFrontMessage(msg){
   history.value.unshift(msg)
 }
 function handleClose(){
-  modalRef.value.close()
   inputRef.value.close()
 }
 defineExpose({
@@ -66,10 +65,10 @@ defineExpose({
 </script>
 
 <template>
-<dialog ref="modal-ref" class="modal">
+<dialog ref="modal-ref" class="modal" @close="handleClose">
   <div class="modal-box w-90 h-150 p-0 overflow-hidden" :style="modalStyle">
     <div class="flex flex-col h-full bg-black/10 relative">
-      <button @click="handleClose" class="btn btn-sm btn-circle btn-ghost bg-black/20 text-white absolute right-1 top-1 z-50">
+      <button @click="modalRef.close()" class="btn btn-sm btn-circle btn-ghost bg-black/20 text-white absolute right-1 top-1 z-50">
         ✕
       </button>
 
