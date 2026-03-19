@@ -9,6 +9,10 @@ import UserMenu from "@/components/navbar/UserMenu.vue";
 import {ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import SearchIcon from "@/components/navbar/icons/SearchIcon.vue";
+import BlogList from "@/views/blog/BlogList.vue";
+import BlogListIcon from "@/views/blog/icon/BlogListIcon.vue";
+import BlogCreateIcon from "@/views/blog/icon/BlogCreateIcon.vue";
+import BlogManageIcon from "@/views/blog/icon/BlogManageIcon.vue";
 const user=useUserStore()
 
 const searchQuery = ref('')
@@ -92,6 +96,24 @@ function handleSearch(){
             <RouterLink :to="{name:'create-index'}" active-class="menu-focus" class="is-drawer-close:tooltip is-drawer-close:tooltip-right py-3" data-tip="创作">
               <CreateIcon />
               <span class="is-drawer-close:hidden text-base ml-2 whitespace-nowrap">创作</span>
+            </RouterLink>
+          </li>
+           <li>
+            <RouterLink :to="{name:'blog-index'}" active-class="menu-focus" class="is-drawer-close:tooltip is-drawer-close:tooltip-right py-3" data-tip="博客">
+              <BlogListIcon />
+              <span class="is-drawer-close:hidden text-base ml-2 whitespace-nowrap">博客列表</span>
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink :to="{name:'blog-create-index'}" active-class="menu-focus" class="is-drawer-close:tooltip is-drawer-close:tooltip-right py-3" data-tip="博客创作">
+              <BlogCreateIcon />
+              <span class="is-drawer-close:hidden text-base ml-2 whitespace-nowrap">博客创作</span>
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink :to="{name:'blog-manage-index'}" active-class="menu-focus" class="is-drawer-close:tooltip is-drawer-close:tooltip-right py-3" data-tip="博客管理">
+              <BlogManageIcon />
+              <span class="is-drawer-close:hidden text-base ml-2 whitespace-nowrap">博客管理</span>
             </RouterLink>
           </li>
         </ul>

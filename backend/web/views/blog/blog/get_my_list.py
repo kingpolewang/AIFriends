@@ -13,19 +13,23 @@ class GetMyListView(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request):
         try:
-            items_count=int(request.query_params.get('items_count',0))
-            user_id = int(request.query_params.get('user_id'))
-            blogs_raw = Blog.objects.filter(author__user__id=user_id).order_by('-create_time')[items_count:items_count+20]
-            blogs=[]
+            items_count = int(request.query_params.get('items_count', 0))
+
+            blogs_raw = Blog.objects.filter(
+                author__user=request.user  # 🔥 核心
+            ).order_by('-create_time')[items_count:items_count + 20]
+
+            blogs = []
+
             for blog in blogs_raw:
                 blogs.append({
                     'id': blog.id,
                     'title': blog.title,
                     'content': blog.content,
                     'cover_photo': blog.cover_photo.url if blog.cover_photo else None,
-                    'create_time': blog.create_time,
                     'tags': [tag.name for tag in blog.tags.all()],
                 })
+
             return Response({
                 'result': 'success',
                 'blogs': blogs

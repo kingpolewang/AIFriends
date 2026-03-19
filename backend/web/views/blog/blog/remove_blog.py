@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from web.models.blog import Blog
+from web.models.blog import Blog, Tag
 
 
 class RemoveBlogView(APIView):
@@ -14,6 +14,7 @@ class RemoveBlogView(APIView):
             blog_id = request.data.get('blog_id')
             blog = Blog.objects.get(id=blog_id,author__user=request.user)
             blog.delete()
+            Tag.objects.filter(blog__isnull=True).delete()
             return Response({
                 'result': 'success',
             })

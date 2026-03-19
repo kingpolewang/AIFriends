@@ -17,8 +17,8 @@ class CreateBlogView(APIView):
             author = UserProfile.objects.get(user=user)
             title = request.data.get('title','').strip()
             content = request.data.get('content','').strip()
-            cover_photo = request.data.get('cover_photo', None)
-            tags_name = request.data.get('tags', [])
+            cover_photo = request.FILES.get('cover_photo', None)
+            tags_name = request.data.getlist('tags')
             if not title:
                 return Response({
                     'result': '标题不能为空',
@@ -31,7 +31,7 @@ class CreateBlogView(APIView):
                 return Response({
                     'result': '封面不能为空'
                 })
-            Blog.objects.create(
+            blog = Blog.objects.create(
                 author=author,
                 title=title,
                 content=content,
@@ -39,10 +39,12 @@ class CreateBlogView(APIView):
                 create_time=timezone.now(),
                 update_time=timezone.now(),
             )
-            #处理标签
+            # 处理标签
             for name in tags_name:
-                tag,created = Tag.objects.get_or_create(name=name)
-                blog.tags.add(tag)
+                name = name.strip().lower()
+                if name:
+                    tag, _ = Tag.objects.get_or_create(name=name)
+                    blog.tags.add(tag)
             return Response({
                 'result': 'success',
             })

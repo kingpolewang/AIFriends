@@ -1,10 +1,9 @@
 <script setup>
-
 import NavBar from "@/components/navbar/NavBar.vue";
-import {onMounted} from "vue";
-import {useUserStore} from "@/stores/user.js";
+import { onMounted } from "vue";
+import { useUserStore } from "@/stores/user.js";
 import api from "@/js/http/api.js";
-import {useRoute, useRouter} from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const user = useUserStore()
 const route = useRoute()
@@ -13,62 +12,48 @@ const router = useRouter()
 onMounted(async () => {
   try {
     const res = await api.get('/api/user/account/get_user_info/')
-    const data = res.data
-    if (data.result === 'success') {
-      user.setUserInfo(data)
+    if (res.data.result === 'success') {
+      user.setUserInfo(res.data)
     }
   } catch (err) {
+    console.error("Auth failed", err)
   } finally {
     user.setHasPulledUserInfo(true)
-
     if (route.meta.needLogin && !user.isLogin()) {
-      await router.replace({
-        name: 'user-account-login-index',
-      })
+      router.replace({ name: 'user-account-login-index' })
     }
   }
 })
-
 </script>
 
 <template>
-  <div class="app-wrapper">
+  <div class="relative min-h-screen">
+    <div class="fixed inset-0 z-[-1] pointer-events-none">
+      <div class="absolute inset-0 bg-base-200/50"></div>
+      <img
+        src="@/assets/static/image/background.jpg"
+        class="w-full h-full object-cover opacity-60"
+        style="image-rendering: high-quality;"
+      />
+    </div>
+
     <NavBar>
-      <RouterView/>
+      <div class="min-h-[calc(100vh-64px)] overflow-x-hidden">
+        <RouterView v-slot="{ Component }">
+          <transition name="fade" mode="out-in">
+            <component :is="Component" />
+          </transition>
+        </RouterView>
+      </div>
     </NavBar>
   </div>
 </template>
 
 <style>
-/* 建议去掉 scoped 以便背景应用到 body 或根容器 */
-.app-wrapper {
-  position: relative;
-  min-height: 100vh;
-  width: 100%;
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
 }
-
-.app-wrapper::before {
-  content: "";
-  position: fixed; /* 固定背景，不随滚动条滚动 */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-
-  /* 替换成你的图片地址 */
-  background-image: url("@/assets/static/image/background.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  /* 核心设置：透明度 */
-  opacity: 0.7;
-
-  /* 确保背景在内容层级之下 */
-  z-index: -1;
-
-  /* 解决你之前关心的清晰度问题：强制高质量渲染 */
-  image-rendering: high-quality;
-  pointer-events: none; /* 确保背景不响应鼠标事件 */
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
 }
 </style>

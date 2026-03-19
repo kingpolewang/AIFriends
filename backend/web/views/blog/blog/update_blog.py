@@ -1,36 +1,61 @@
-#更新博客
-#/api/blog/update/
-from datetime import timezone
-
+from django.utils import timezone
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from web.models.blog import Blog, Tag
+from web.views.utils.photo import remove_old_photo   # 🔥 引入
 
 
 class UpdateBlogView(APIView):
     permission_classes = (IsAuthenticated,)
+    parser_classes = (MultiPartParser, FormParser)
+
     def post(self, request):
         try:
             blog_id = request.data.get('blog_id')
-            title = request.data.get('title')
-            content = request.data.get('content')
-            tag_names=request.data.get('tags',[])
-            blog=Blog.objects.get(id=blog_id,author__user=request.user)
-            blog.title=title
-            blog.content=content
-            blog.update_time=timezone.now()
+            title = request.data.get('title', '').strip()
+            content = request.data.get('content', '').strip()
+            tag_names = request.data.getlist('tags')
+
+            cover_photo = request.FILES.get('cover_photo', None)
+
+            blog = Blog.objects.get(id=blog_id, author__user=request.user)
+
+            # ===== 基础校验 =====
+            if not title:
+                return Response({'result': '标题不能为空'})
+            if not content:
+                return Response({'result': '内容不能为空'})
+
+            # ===== 更新封面（重点🔥）=====
+            if cover_photo:
+                # 删除旧封面
+                if blog.cover_photo:
+                    remove_old_photo(blog.cover_photo)
+
+                blog.cover_photo = cover_photo
+
+            # ===== 更新基本信息 =====
+            blog.title = title
+            blog.content = content
+            blog.update_time = timezone.now()
             blog.save()
-            #更新标签
+
+            # ===== 更新标签 =====
             blog.tags.clear()
+
             for name in tag_names:
-                tag,_=Tag.objects.get_or_create(name=name)
-                blog.tags.add(tag)
+                name = name.strip().lower()
+                if name:
+                    tag, _ = Tag.objects.get_or_create(name=name)
+                    blog.tags.add(tag)
+
+            return Response({'result': 'success'})
+
+        except Exception as e:
             return Response({
-                'result': 'success',
-            })
-        except:
-            return Response({
-                'result':'系统异常，请稍后重试'
+                'result': '系统异常，请稍后重试',
+                'error': str(e)
             })

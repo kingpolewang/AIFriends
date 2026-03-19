@@ -88,15 +88,27 @@ const router = createRouter({
         needLogin: true,
       },
     },
+      // router/index.js    博客模块
     {
-      path: '/:pathMatch(.*)*',
-      component: NotFoundIndex,
-      name: 'not-found',
-      meta: {
-        needLogin: false,
-      },
+      path: '/blog',
+      name: 'blog-index',
+      component: () => import('@/views/blog/BlogList.vue')
     },
-
+    {
+      path: '/blog/create',
+      name: 'blog-create-index',
+      component: () => import('@/views/blog/BlogCreate.vue')
+    },
+    {
+      path: '/blog/manage',
+      name: 'blog-manage-index',
+      component: () => import('@/views/blog/BlogManage.vue')
+    },
+    {
+      path: '/blog/:blog_id',
+      name: 'blog-detail',
+      component: () => import('@/views/blog/BlogDetail.vue')
+    },
   ],
 })
 
