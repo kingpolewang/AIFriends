@@ -18,31 +18,23 @@ class UpdateBlogView(APIView):
             title = request.data.get('title', '').strip()
             content = request.data.get('content', '').strip()
             tag_names = request.data.getlist('tags')
-
             cover_photo = request.FILES.get('cover_photo', None)
-
             blog = Blog.objects.get(id=blog_id, author__user=request.user)
-
-            # ===== 基础校验 =====
             if not title:
                 return Response({'result': '标题不能为空'})
             if not content:
                 return Response({'result': '内容不能为空'})
-
-            # ===== 更新封面（重点🔥）=====
             if cover_photo:
                 # 删除旧封面
                 if blog.cover_photo:
                     remove_old_photo(blog.cover_photo)
 
                 blog.cover_photo = cover_photo
-
             # ===== 更新基本信息 =====
             blog.title = title
             blog.content = content
             blog.update_time = timezone.now()
             blog.save()
-
             # ===== 更新标签 =====
             blog.tags.clear()
 

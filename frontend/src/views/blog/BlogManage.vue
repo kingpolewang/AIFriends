@@ -54,7 +54,7 @@ async function submitEdit(id) {
   const res = await api.post("api/blog/update/", formData)
   if (res.data.result === 'success') {
     const index = blogs.value.findIndex(b => b.id === id)
-    blogs.value[index] = { ...blogs.value[index], title: editTitle.value, content: editContent.value, tags: editTags.value.split(','), cover_photo: editCoverUrl.value }
+    blogs.value[index] = { ...blogs.value[index], title: editTitle.value, content: editContent.value, tags: editTags.value.split(',').map(t => t.trim()).filter(Boolean), cover_photo: editCoverUrl.value }
     editingId.value = null
   }
   submitting.value = false
@@ -91,6 +91,11 @@ onBeforeUnmount(() => observer?.disconnect())
           </label>
           <input v-model="editTitle" class="input input-bordered w-full handwritten-content font-bold" />
           <textarea v-model="editContent" class="textarea textarea-bordered w-full h-40 handwritten-content"></textarea>
+          <input
+            v-model="editTags"
+            placeholder="标签（用逗号分隔，如：生活,旅行,随笔）"
+            class="input input-bordered w-full handwritten-content"
+          />
           <div class="flex justify-end gap-2">
             <button class="btn btn-ghost btn-sm" @click="editingId = null">取消</button>
             <button class="btn btn-primary btn-sm" @click="submitEdit(blog.id)" :disabled="submitting">保存</button>
@@ -102,6 +107,15 @@ onBeforeUnmount(() => observer?.disconnect())
           <div class="p-6 flex-1 flex flex-col">
             <h2 class="text-xl font-bold mb-2 handwritten-content">{{ blog.title }}</h2>
             <p class="line-clamp-3 text-sm opacity-80 mb-4 flex-1 handwritten-content">{{ blog.content }}</p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span
+                v-for="tag in blog.tags"
+                :key="tag"
+                class="px-2 py-1 text-xs bg-primary/10 text-primary rounded-full"
+              >
+                #{{ tag }}
+              </span>
+            </div>
             <div class="flex gap-2 justify-end mt-4">
               <button class="btn btn-outline btn-primary btn-sm" @click="startEdit(blog)">编辑</button>
               <button class="btn btn-outline btn-error btn-sm" @click="remove(blog.id)">删除</button>
