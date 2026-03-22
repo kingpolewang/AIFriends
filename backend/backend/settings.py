@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 from dotenv import load_dotenv
+import mimetypes
+
+mimetypes.add_type("application/javascript", ".mjs", True)
 
 #自动加载环境变量 backend下的 .env文件  将文件中的环境变量加载到内存中
 load_dotenv()
@@ -136,7 +139,7 @@ else:
 if DEBUG:
     MEDIA_URL = 'http://127.0.0.1:8000/media/'
 else:
-    MEDIA_URL='https: // app7555.acapp.acwing.com.cn'
+    MEDIA_URL='https://app7555.acapp.acwing.com.cn/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 

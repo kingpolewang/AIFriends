@@ -31,7 +31,7 @@ onMounted(async () => {
     <div class="fixed inset-0 z-[-1] pointer-events-none">
       <div class="absolute inset-0 bg-base-200/50"></div>
       <img
-        src="@/assets/static/image/background.jpg"
+        src="@/assets/static/background.jpg"
         class="w-full h-full object-cover opacity-60"
         style="image-rendering: high-quality;"
       />
