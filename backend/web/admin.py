@@ -3,7 +3,7 @@ from django.contrib import admin
 
 from web.models.blog import Blog, Tag
 # 2. 导入你的自定义模型
-from web.models.character import Character
+from web.models.character import Character, Voice
 from web.models.friend import Friend, Message, SystemPrompt
 from web.models.user import UserProfile
 
@@ -16,7 +16,10 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Character)      #把Character模型注册到Django后台
 class CharacterAdmin(admin.ModelAdmin): #定义Character模型的管理配置类
-    raw_id_fields = ('author',)     # raw_id_fields让author字段用输入框而不是下拉框显示
+    raw_id_fields = ('author','voice')     # raw_id_fields让author字段用输入框而不是下拉框显示
+
+#Voice中没有外键，直接添加
+admin.site.register(Voice)
 
 @admin.register(Friend)
 class FriendAdmin(admin.ModelAdmin):

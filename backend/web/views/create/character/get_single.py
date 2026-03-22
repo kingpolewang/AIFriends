@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from web.models.character import Character
+from web.models.character import Character, Voice
 
 
 class GetSingleCharacterView(APIView):
@@ -15,6 +15,14 @@ class GetSingleCharacterView(APIView):
             # filter: 返回类型 :QuerySet（查询集）   查询结果 : 0个、1个或多个对象
             # get: 返回类型:单个模型对象   查询结果 : 必须只有1个对象
             character = Character.objects.get(id=character_id,author__user=request.user)
+
+            voices_raw = Voice.objects.order_by('-id')
+            voices = []
+            for voice in voices_raw:
+                voices.append({
+                    'id': voice.id,
+                    'name': voice.name,
+                })
             return Response({
                 'result':'success',
                 'character':{
@@ -23,7 +31,9 @@ class GetSingleCharacterView(APIView):
                     'profile': character.profile,
                     'photo': character.photo.url,       #character.photo.url 属性返回的是文件的访问URL，而不是文件内容
                     'background_image': character.background_image.url,
-                }
+                    'voice_id':character.voice.id,
+                },
+                'voices':voices
             })
         except:
             return Response({

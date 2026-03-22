@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from web.models.character import Character
+from web.models.character import Character, Voice
 from web.models.user import UserProfile
 class CreateCharacterView(APIView): # 继承自APIView，创建API视图
     # permission_classes: 权限类列表，控制谁可以访问这个视图
@@ -11,7 +11,6 @@ class CreateCharacterView(APIView): # 继承自APIView，创建API视图
     permission_classes = [IsAuthenticated]
     def post(self, request):         # 处理POST请求的方法
         try:
-
             # request.user: Django自动提供的当前登录用户对象
             user = request.user
 
@@ -24,7 +23,7 @@ class CreateCharacterView(APIView): # 继承自APIView，创建API视图
             # .get('name'): 安全的获取字典值，如果key不存在返回None
             # .strip(): 去除字符串两端的空白字符
             name = request.data.get('name').strip()
-
+            voice_id = request.data.get('voice_id')         #为声音的id
             # [:100000]: 字符串切片，限制简介最大长度为100000字符
             profile = request.data.get('profile').strip()[:100000]
             photo = request.data.get('photo',None)
@@ -48,9 +47,11 @@ class CreateCharacterView(APIView): # 继承自APIView，创建API视图
                 return Response({
                     'result':'聊天背景不能为空'
                 })
+            voice = Voice.objects.get(id=voice_id)
             Character.objects.create(
                 author=user_profile,
                 name=name,
+                voice=voice,
                 profile=profile,
                 photo=photo,
                 background_image=background_image,
@@ -58,7 +59,8 @@ class CreateCharacterView(APIView): # 继承自APIView，创建API视图
             return Response({
                 'result':'success'
             })
-        except:
+        except Exception as e:
+            print(e)
             return Response({
                 'result': '系统异常,创建失败,请稍后重试',
             })

@@ -1,6 +1,5 @@
 import os
 import uuid
-from time import localtime
 
 from django.db import models
 from django.utils import timezone
@@ -20,6 +19,14 @@ def background_image_upload_to(instance, filename):
     filename = f'{uuid.uuid4().hex[:10]}.{ext}'
     return f'character/backgrounds_images/{instance.author.user_id}_{filename}'
 
+class Voice(models.Model):
+    name = models.CharField(max_length=100)
+    #使用创建音色接口创建音色成功后，阿里云会返回一个voice_id
+    voice_id = models.CharField(max_length=100)
+    create_time = models.DateTimeField(default=timezone.now)
+    def __str__(self):
+        return f"{self.name}-{self.voice_id}"
+
 class Character(models.Model):  # models.Model----继承Django的Model基类
     # 外键关联：一个Character属于User下的UserProfile（建立模型之间的关系）
     # on_delete=models.CASCADE: 当用户被删除时，其所有角色也被删除
@@ -28,6 +35,9 @@ class Character(models.Model):  # models.Model----继承Django的Model基类
     name = models.CharField(max_length=50)
     # 角色照片：图片字段，上传时调用photo_upload_to函数
     photo =models.ImageField(upload_to=photo_upload_to)
+
+    voice =models.ForeignKey(Voice, default=None,on_delete=models.CASCADE,blank=True, null=True)
+
     # 角色简介：长文本字段，最大100000字符
     profile = models.TextField(max_length=100000)
     # 背景图片 上传时调用background_image_upload_to函数

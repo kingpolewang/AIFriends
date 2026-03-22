@@ -8,12 +8,16 @@ import {base64ToFile} from "@/js/utils/base64_to_file.js";
 import api from "@/js/http/api.js";
 import {useRoute, useRouter} from "vue-router";
 import {useUserStore} from "@/stores/user.js";
+import Voice from "@/views/create/character/components/Voice.vue";
 
 const user = useUserStore()
 const router = useRouter()
 const route = useRoute()
 let characterId = route.params.character_id
 const character = ref(null)
+const voices=ref([])
+const curVoiceId=ref(null)
+
 
 onMounted(async () => {
   try {
@@ -27,6 +31,8 @@ onMounted(async () => {
     console.log(data)
     if (data.result === 'success') {
       character.value = data.character
+      voices.value=data.voices
+      curVoiceId.value=data.character.voice_id
     }
   } catch (err) {
   }
@@ -36,6 +42,7 @@ const photoRef = useTemplateRef('photo-ref')
 const nameRef = useTemplateRef('name-ref')
 const profileRef = useTemplateRef('profile-ref')
 const backgroundImageRef = useTemplateRef('background-image-ref')
+const voiceRef=useTemplateRef('voice-ref')
 const errorMessage = ref('')
 
 async function handleUpdate() {
@@ -43,6 +50,7 @@ async function handleUpdate() {
   const name = nameRef.value.myName?.trim()
   const profile = profileRef.value.myProfile?.trim()
   const backgroundImage = backgroundImageRef.value.myBackgroundImage
+  const voice=voiceRef.value.myVoice
 
   errorMessage.value = ''
   if (!photo) {
@@ -53,11 +61,15 @@ async function handleUpdate() {
     errorMessage.value = '角色介绍不能为空'
   } else if (!backgroundImage) {
     errorMessage.value = '聊天背景不能为空'
-  } else {
+  } else if (!voice){
+    errorMessage.value='音色不能为空'
+  }
+  else {
     const formData = new FormData()
     formData.append('character_id', characterId)
     formData.append('name', name)
     formData.append('profile', profile)
+    formData.append('voice_id',voice)
 
     if (photo !== character.value.photo) {
       formData.append('photo', base64ToFile(photo, 'photo.png'))
@@ -94,6 +106,7 @@ async function handleUpdate() {
         <h3 class="text-lg font-bold my-4">更新角色</h3>
         <Photo ref="photo-ref" :photo="character.photo" :aspectRatio="1" />
         <Name ref="name-ref" :name="character.name" />
+        <Voice ref="voice-ref" :voices="voices" :curVoiceId="curVoiceId"/>
         <Profile ref="profile-ref" :profile="character.profile" />
 
         <BackgroundImage
