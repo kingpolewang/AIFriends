@@ -31,7 +31,7 @@ const startRecord = async () => {
   mediaRecorder.start()
   recording.value = true
 
-  // ⭐ 30秒自动停止
+  // 30秒自动停止
    timer = setTimeout(() => {
     stopRecord()
   }, 30000)
