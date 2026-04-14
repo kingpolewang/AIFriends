@@ -15,7 +15,20 @@ const editTags = ref("")
 const editCover = ref(null)
 const editCoverUrl = ref("")
 
-let vditor = null   // ⭐ 只维护一个实例
+let vditor = null   // 只维护一个实例
+
+function handleSelectFile(e) {
+  const file = e.target.files[0]
+  if (!file) return
+
+  editCover.value = file
+
+  // 本地预览（关键）
+  editCoverUrl.value = URL.createObjectURL(file)
+}
+
+
+
 
 async function loadMore() {
   const res = await api.get("api/blog/my_list/", {
@@ -64,6 +77,17 @@ async function startEdit(blog) {
     },
   })
 }
+async function remove(id) {
+  const res = await api.post("api/blog/remove/", {
+    blog_id: id,
+  })
+
+  if (res.data.result === "success") {
+    blogs.value = blogs.value.filter(b => b.id !== id)
+  } else {
+    alert(res.data.result)
+  }
+}
 
 // 🚀 提交
 async function submitEdit(id) {
@@ -91,10 +115,9 @@ async function submitEdit(id) {
       ...blogs.value[index],
       title: editTitle.value,
       content: markdown,
-      tags: editTags.value.split(",").map((t) => t.trim()).filter(Boolean),
-      cover_photo: editCoverUrl.value,
+      tags: editTags.value.split(",").map(t => t.trim()).filter(Boolean),
+      cover_photo: res.data.cover_photo,  // 用后端真实url
     }
-
     editingId.value = null
     vditor?.destroy()
   }

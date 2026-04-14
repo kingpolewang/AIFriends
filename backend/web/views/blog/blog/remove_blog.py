@@ -13,6 +13,8 @@ class RemoveBlogView(APIView):
         try:
             blog_id = request.data.get('blog_id')
             blog = Blog.objects.get(id=blog_id,author__user=request.user)
+            if blog.cover_photo:
+                blog.cover_photo.delete(save=False)
             blog.delete()
             Tag.objects.filter(blog__isnull=True).delete()
             return Response({

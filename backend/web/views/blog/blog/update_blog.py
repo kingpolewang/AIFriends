@@ -43,8 +43,11 @@ class UpdateBlogView(APIView):
                 if name:
                     tag, _ = Tag.objects.get_or_create(name=name)
                     blog.tags.add(tag)
+            return Response({
+                'result': 'success',
+                'cover_photo': blog.cover_photo.url if blog.cover_photo else '',
+            })
 
-            return Response({'result': 'success'})
 
         except Exception as e:
             return Response({
