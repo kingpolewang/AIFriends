@@ -1,6 +1,7 @@
 from django.urls import path, re_path
 
 from web.views.blog.blog.create_blog import CreateBlogView
+from web.views.blog.blog.get_blog_detail import GetBlogDetailView
 from web.views.blog.blog.get_my_list import GetMyListView
 from web.views.blog.blog.remove_blog import RemoveBlogView
 from web.views.blog.blog.update_blog import UpdateBlogView
@@ -62,6 +63,7 @@ urlpatterns = [
     path('api/blog/update/',UpdateBlogView.as_view()),
     path('api/blog/remove/',RemoveBlogView.as_view()),
     path('api/blog/list/',GetAllBlogsView.as_view()),
+    path("api/blog/detail/<int:blog_id>/", GetBlogDetailView.as_view()),
     path('', index),
     re_path(r'^(?!media/|static/|assets/).*$', index)
 ]

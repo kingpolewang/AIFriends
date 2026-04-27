@@ -14,24 +14,24 @@ async function renderMarkdown(markdown) {
   await nextTick()
 
   Vditor.preview(document.getElementById("preview"), markdown, {
-    mode: "dark", // 你喜欢深色代码块可以用 dark
+    mode: "dark",
     hljs: {
       enable: true,
       style: "github-dark", // highlight 风格（vditor 内部支持）
       lineNumber: true
     },
     markdown: {
-      toc: true, // 自动目录（可选）
+      toc: true,
     },
     theme: {
-      current: "light", // 页面主题
+      current: "light",
     }
   })
 }
 
 async function load() {
-  const res = await api.get("api/blog/list/", { params: { items_count: 0 } })
-  blog.value = res.data.blogs.find(b => b.id == route.params.blog_id)
+  const res = await api.get(`api/blog/detail/${route.params.blog_id}/`)
+  blog.value = res.data.blog
   loading.value = false
 
   if (blog.value?.content) {
@@ -78,7 +78,7 @@ onMounted(load)
           </div>
         </div>
 
-        <!-- 🔥 Vditor 原生渲染区域 -->
+        <!-- Vditor 原生渲染区域 -->
         <div id="preview" class="vditor-reset"></div>
 
       </div>
