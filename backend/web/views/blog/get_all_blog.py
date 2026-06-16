@@ -10,7 +10,7 @@ class GetAllBlogsView(APIView):
         try:
             items_count = int(request.GET.get('items_count',0))
             blogs_raw = Blog.objects.all().select_related('author__user')\
-                            .prefetch_related('tags').order_by('-create_time')[items_count:items_count+20]
+                            .prefetch_related('tags').order_by('-create_time')[items_count:items_count+6]
             blogs = []
             for blog in blogs_raw:
                 author = blog.author
